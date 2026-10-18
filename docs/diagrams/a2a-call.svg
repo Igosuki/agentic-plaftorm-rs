@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 1048" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="a2a-call-title a2a-call-desc" id="a2a-call-root">
+        <title id="a2a-call-title">Remote A2A call</title>
+        <desc id="a2a-call-desc">Sequence of one remote A2A call: the caller's guard asks A2aEngine, which mints a downscoped JWT and sends the message; the peer authenticates, checks ownership, runs its pipeline and returns a completed task that the guard validates locally.</desc>
+        <defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Serif:ital@0;1&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400&amp;family=Noto+Sans+TC:wght@400;500;600&amp;family=Noto+Serif+TC:wght@400&amp;display=swap');
+      #a2a-call-root { --color-paper:   #f5f5f5;
+      --color-ink:     #2d3142;
+      --color-muted:   #4f5d75;
+      --color-accent:  #bf4520;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', 'Noto Serif', 'Noto Serif KR', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace; }
+      #a2a-call-root { font-family: var(--font-sans); color: var(--color-ink); }
+      #a2a-call-root .diagram-container { width: 100%; overflow-x: auto; }
+      #a2a-call-root .diagram-container { overflow-x: visible; }</style>
+          <marker id="a2a-call-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+          <marker id="a2a-call-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bf4520"/></marker>
+          <marker id="a2a-call-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#f5f5f5"/>
+<line x1="200" y1="128" x2="200" y2="956" stroke="#2d3142" stroke-width="1" stroke-dasharray="3,3" stroke-opacity="0.22"/>
+<line x1="500" y1="128" x2="500" y2="956" stroke="#2d3142" stroke-width="1" stroke-dasharray="3,3" stroke-opacity="0.22"/>
+<line x1="800" y1="128" x2="800" y2="956" stroke="#2d3142" stroke-width="1" stroke-dasharray="3,3" stroke-opacity="0.22"/>
+<line x1="1100" y1="128" x2="1100" y2="956" stroke="#2d3142" stroke-width="1" stroke-dasharray="3,3" stroke-opacity="0.22"/>
+<rect x="148" y="748" width="408" height="108" rx="4" fill="#2d3142" stroke="#2d3142" stroke-width="1" fill-opacity="0.02" stroke-opacity="0.22"/>
+<rect x="148" y="748" width="40" height="16" rx="2" fill="#f5f5f5" stroke="#2d3142" stroke-width="1" stroke-opacity="0.22"/>
+<text x="168" y="760" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.12em">OPT</text>
+<text x="224" y="782" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.04em">[invalid output]</text>
+<rect x="640" y="884" width="320" height="48" rx="4" fill="#f5f5f5"/><rect x="640" y="884" width="320" height="48" rx="4" fill="#2d3142" stroke="#2d3142" stroke-width="1" fill-opacity="0.05" stroke-opacity="0.22"/>
+<text x="800" y="905" fill="#2d3142" font-size="11" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Another caller asking GetTask for this task</text>
+<text x="800" y="921" fill="#2d3142" font-size="11" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">gets -32001 task not found</text>
+<rect x="196" y="168" width="8" height="676" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.06"/>
+<rect x="496" y="168" width="8" height="492" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.06"/>
+<rect x="496" y="828" width="8" height="16" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.06"/>
+<rect x="796" y="308" width="8" height="296" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.06"/>
+<rect x="1096" y="472" width="8" height="56" fill="#2d3142" stroke="#4f5d75" stroke-width="0.8" fill-opacity="0.06"/>
+<line x1="204" y1="176" x2="496" y2="176" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#a2a-call-arrow)"/>
+<rect x="232" y="158" width="236" height="12" rx="2" fill="#f5f5f5"/>
+<text x="350" y="167" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">CHAT(TEMPLATE + LOCAL SCHEMA, MESSAGE)</text>
+<path d="M504,216 H528 Q536,216 536,224 V236 Q536,244 528,244 H504" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#a2a-call-arrow)"/>
+<rect x="548" y="217" width="188" height="26" rx="2" fill="#f5f5f5"/>
+<text x="554" y="228" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">MINT JWT:</text>
+<text x="554" y="240" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">AUD A2A:PEER, ROLES DOWNSCOPED</text>
+<line x1="504" y1="316" x2="796" y2="316" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#a2a-call-arrow-link)"/>
+<rect x="548" y="284" width="204" height="26" rx="2" fill="#f5f5f5"/>
+<text x="650" y="295" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">SENDMESSAGE: FRESH CONTEXTID,</text>
+<text x="650" y="307" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">SKILL METADATA, TRANSCRIPT INLINE</text>
+<path d="M804,348 H828 Q836,348 836,356 V368 Q836,376 828,376 H804" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#a2a-call-arrow)"/>
+<rect x="848" y="349" width="160" height="26" rx="2" fill="#f5f5f5"/>
+<text x="854" y="360" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">AUTHENTICATE_ANY(GATEWAY,</text>
+<text x="854" y="372" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">A2A, A2A:APP)</text>
+<path d="M804,404 H828 Q836,404 836,412 V424 Q836,432 828,432 H804" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#a2a-call-arrow)"/>
+<rect x="848" y="405" width="164" height="26" rx="2" fill="#f5f5f5"/>
+<text x="854" y="416" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">METHOD ALLOWLIST,</text>
+<text x="854" y="428" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">TASK AND CONTEXT OWNERSHIP</text>
+<line x1="804" y1="480" x2="1096" y2="480" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#a2a-call-arrow)"/>
+<rect x="852" y="462" width="200" height="12" rx="2" fill="#f5f5f5"/>
+<text x="950" y="471" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">RUN_PIPELINE(AGENT_HINT = SKILL)</text>
+<line x1="1096" y1="520" x2="804" y2="520" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#a2a-call-arrow)"/>
+<rect x="832" y="502" width="240" height="12" rx="2" fill="#f5f5f5"/>
+<text x="950" y="511" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">RUNRESPONSE, AFTER THE PEER'S OWN GUARD</text>
+<line x1="796" y1="596" x2="504" y2="596" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#a2a-call-arrow)"/>
+<rect x="556" y="564" width="188" height="26" rx="2" fill="#f5f5f5"/>
+<text x="650" y="575" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">COMPLETED TASK: TEXT +</text>
+<text x="650" y="587" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">DATAPART {OUTPUT, TRACE.USAGE}</text>
+<line x1="496" y1="652" x2="204" y2="652" stroke="#bf4520" stroke-width="1.4" marker-end="url(#a2a-call-arrow-accent)"/>
+<rect x="284" y="634" width="136" height="12" rx="2" fill="#f5f5f5"/>
+<text x="350" y="643" fill="#bf4520" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">OUTPUT JSON AND USAGE</text>
+<path d="M204,692 H228 Q236,692 236,700 V712 Q236,720 228,720 H204" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#a2a-call-arrow)"/>
+<rect x="248" y="700" width="204" height="12" rx="2" fill="#f5f5f5"/>
+<text x="254" y="709" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">LOCAL JSON SCHEMA AND T::VALIDATE</text>
+<line x1="204" y1="836" x2="496" y2="836" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#a2a-call-arrow)"/>
+<rect x="276" y="804" width="152" height="26" rx="2" fill="#f5f5f5"/>
+<text x="350" y="815" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">RE-PROMPT WITH FEEDBACK,</text>
+<text x="350" y="827" fill="#5a6580" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">TRANSCRIPT REPLAYED</text>
+<rect x="104" y="72" width="192" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="104" y="72" width="192" height="56" rx="6" fill="#4f5d75" stroke="#5a6580" stroke-width="1" fill-opacity="0.10"/>
+<text x="200" y="97" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Guard</text>
+<text x="200" y="112" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">caller side</text>
+<rect x="404" y="72" width="192" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="404" y="72" width="192" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<text x="500" y="104" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">A2aEngine</text>
+<rect x="704" y="72" width="192" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="704" y="72" width="192" height="56" rx="6" fill="#bf4520" stroke="#bf4520" stroke-width="1" fill-opacity="0.08"/>
+<text x="800" y="104" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Peer A2A server</text>
+<rect x="1004" y="72" width="192" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="1004" y="72" width="192" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<text x="1100" y="104" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Peer pipeline</text>
+<line x1="32" y1="984" x2="1248" y2="984" stroke="#2d3142" stroke-width="0.8" stroke-opacity="0.10"/>
+<text x="32" y="1000" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.18em">LEGEND</text>
+<line x1="32" y1="1016" x2="60" y2="1016" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#a2a-call-arrow-link)"/>
+<text x="68" y="1020" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Network call</text>
+<line x1="158" y1="1016" x2="186" y2="1016" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#a2a-call-arrow)"/>
+<text x="194" y="1020" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Local call</text>
+<line x1="274" y1="1016" x2="302" y2="1016" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#a2a-call-arrow)"/>
+<text x="310" y="1020" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Return</text>
+<line x1="369" y1="1016" x2="397" y2="1016" stroke="#bf4520" stroke-width="1.2" marker-end="url(#a2a-call-arrow-accent)"/>
+<text x="405" y="1020" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Headline result</text>
+<rect x="515" y="1010" width="20" height="12" rx="2" fill="#bf4520" stroke="#bf4520" stroke-width="1" fill-opacity="0.08"/>
+<text x="547" y="1020" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Peer boundary</text>
+      </svg>

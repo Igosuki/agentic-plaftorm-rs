@@ -1,0 +1,8 @@
+default: deny
+roles:
+  reader:
+    allow: ["docs.*"]
+  engineer:
+    allow: ["docs.*"]
+  admin:
+    allow: ["*"]

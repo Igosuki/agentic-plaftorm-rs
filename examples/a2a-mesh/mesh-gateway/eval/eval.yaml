@@ -1,0 +1,9 @@
+runs: 1
+thresholds:
+  tool_trajectory_avg: 0.8
+  response_match_avg: 0.7
+  routing_accuracy: 0.9
+users:
+  alice: alice-key
+  bob: bob-key
+  carol: carol-key

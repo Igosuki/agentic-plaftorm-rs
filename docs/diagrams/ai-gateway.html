@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI gateway tier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@400&family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+TC:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;
+      --color-ink:     #2d3142;
+      --color-muted:   #4f5d75;
+      --color-accent:  #bf4520;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', 'Noto Serif', 'Noto Serif KR', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1344px; width: 100%; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 1280px; display: block; }
+    @media print {
+      .diagram-container { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Deployment · AI gateway</p>
+    <h1>AI gateway tier</h1>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 1280 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ai-gateway-title ai-gateway-desc">
+        <title id="ai-gateway-title">AI gateway tier</title>
+        <desc id="ai-gateway-desc">Three apps send model calls through one load balancer to stateless LiteLLM replicas, which share Postgres and Redis and reach Ollama GPU nodes and hosted providers.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bf4520"/></marker>
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#f5f5f5"/>
+<rect x="32" y="116" width="256" height="384" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="4,4"/>
+<rect x="40" y="120" width="192" height="12" rx="2" fill="#f5f5f5"/>
+<text x="46" y="129" fill="#5a6580" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.14em">AGENTIC APPS · ONE GATEWAY EACH</text>
+<rect x="464" y="72" width="448" height="448" rx="8" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="4,4"/>
+<rect x="472" y="76" width="236" height="12" rx="2" fill="#f5f5f5"/>
+<text x="478" y="85" fill="#5a6580" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.14em">AI GATEWAY TIER · N STATELESS REPLICAS</text>
+<path d="M264,188 H312 Q320,188 320,196 V308" fill="none" stroke="#2e5aa8" stroke-width="1.2"/>
+<path d="M264,428 H312 Q320,428 320,420 V308" fill="none" stroke="#2e5aa8" stroke-width="1.2"/>
+<line x1="264" y1="308" x2="488" y2="308" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+<circle cx="320" cy="308" r="3" fill="#2e5aa8"/>
+<rect x="360" y="276" width="88" height="26" rx="2" fill="#f5f5f5"/>
+<text x="404" y="287" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">GATEWAY:ALIAS</text>
+<text x="404" y="299" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">+ VIRTUAL KEY</text>
+<path d="M600,288 H624 Q632,288 632,280 V200 Q632,192 640,192 H664" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<path d="M600,328 H624 Q632,328 632,336 V416 Q632,424 640,424 H664" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="848" y1="192" x2="880" y2="192" stroke="#4f5d75" stroke-width="1.2"/>
+<line x1="848" y1="424" x2="880" y2="424" stroke="#4f5d75" stroke-width="1.2"/>
+<line x1="880" y1="144" x2="880" y2="476" stroke="#4f5d75" stroke-width="1.2"/>
+<circle cx="880" cy="192" r="3" fill="#4f5d75"/>
+<circle cx="880" cy="424" r="3" fill="#4f5d75"/>
+<circle cx="880" cy="252" r="3" fill="#4f5d75"/>
+<circle cx="880" cy="368" r="3" fill="#4f5d75"/>
+<path d="M880,144 Q880,136 888,136 H992" fill="none" stroke="#4f5d75" stroke-width="1.2"/>
+<line x1="880" y1="252" x2="992" y2="252" stroke="#4f5d75" stroke-width="1.2"/>
+<line x1="880" y1="368" x2="992" y2="368" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+<path d="M880,476 Q880,484 888,484 H992" fill="none" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+<rect x="56" y="156" width="208" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="56" y="156" width="208" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<text x="160" y="192" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">docs-assistant</text>
+<rect x="56" y="276" width="208" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="56" y="276" width="208" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<text x="160" y="312" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">mesh-gateway</text>
+<rect x="56" y="396" width="208" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="56" y="396" width="208" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<text x="160" y="432" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">minimal</text>
+<rect x="488" y="268" width="112" height="80" rx="6" fill="#f5f5f5"/>
+<rect x="488" y="268" width="112" height="80" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+<text x="544" y="312" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Load balancer</text>
+<rect x="664" y="160" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="664" y="160" width="184" height="64" rx="6" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1"/>
+<text x="756" y="189" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">LiteLLM</text>
+<text x="756" y="204" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">stateless replica</text>
+<rect x="664" y="392" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="664" y="392" width="184" height="64" rx="6" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1"/>
+<text x="756" y="421" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">LiteLLM</text>
+<text x="756" y="436" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">stateless replica</text>
+<rect x="992" y="100" width="256" height="72" rx="6" fill="#f5f5f5"/>
+<rect x="992" y="100" width="256" height="72" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+<text x="1120" y="126" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Postgres</text>
+<text x="1120" y="141" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">virtual keys, teams,</text>
+<text x="1120" y="153" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">budgets, spend logs</text>
+<rect x="992" y="216" width="256" height="72" rx="6" fill="#f5f5f5"/>
+<rect x="992" y="216" width="256" height="72" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+<text x="1120" y="242" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Redis</text>
+<text x="1120" y="257" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">shared rate limits,</text>
+<text x="1120" y="269" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">cooldowns, cache</text>
+<rect x="992" y="332" width="256" height="72" rx="6" fill="#f5f5f5"/>
+<rect x="992" y="332" width="256" height="72" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+<text x="1120" y="372" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Ollama GPU nodes</text>
+<rect x="992" y="448" width="256" height="72" rx="6" fill="#f5f5f5"/>
+<rect x="992" y="448" width="256" height="72" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+<text x="1120" y="481" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Hosted providers</text>
+<text x="1120" y="496" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">OpenAI, Anthropic, Gemini</text>
+<line x1="32" y1="556" x2="1248" y2="556" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<text x="32" y="572" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.18em">LEGEND</text>
+<line x1="32" y1="588" x2="60" y2="588" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+<text x="68" y="592" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">API / model call</text>
+<line x1="179" y1="588" x2="207" y2="588" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+<text x="215" y="592" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Internal routing</text>
+<line x1="326" y1="588" x2="354" y2="588" stroke="#4f5d75" stroke-width="1.2"/>
+<text x="362" y="592" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Shared state</text>
+<line x1="466" y1="580" x2="466" y2="596" stroke="#4f5d75" stroke-width="1.2"/><circle cx="466" cy="588" r="3" fill="#4f5d75"/><line x1="466" y1="588" x2="480" y2="588" stroke="#4f5d75" stroke-width="1.2"/>
+<text x="488" y="592" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Shared bus: every replica reaches every target</text>
+<rect x="759" y="582" width="20" height="12" rx="2" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1"/>
+<text x="791" y="592" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Replica</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

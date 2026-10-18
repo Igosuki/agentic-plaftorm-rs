@@ -1,0 +1,12 @@
+default: deny
+roles:
+  reader:
+    allow: ["docs.*", "tickets.list_tickets", "tickets.get_ticket"]
+  engineer:
+    allow: ["docs.*", "tickets.*"]
+  admin:
+    allow: ["*"]
+  # Example of an explicit deny: wins over any allow held by another role of the same caller.
+  contractor:
+    allow: ["docs.*", "tickets.*"]
+    deny: ["tickets.create_ticket"]

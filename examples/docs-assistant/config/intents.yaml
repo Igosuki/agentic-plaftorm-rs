@@ -1,0 +1,58 @@
+min_score: 2
+min_margin: 2
+agents:
+  docs_agent:
+    keywords:
+      docs: 2
+      doc: 1
+      documentation: 2
+      nimbus: 2
+      configure: 2
+      configuration: 2
+      config: 2
+      setting: 1
+      default: 1
+      retention: 2
+      partition: 2
+      partitions: 2
+      topic: 1
+      broker: 1
+      consumer: 1
+      group: 1
+      dlq: 2
+      dead: 1
+      letter: 1
+      queue: 1
+      rate: 1
+      limit: 1
+      limits: 1
+      publish: 1
+      authentication: 2
+      mtls: 2
+      token: 1
+      install: 1
+      timeout: 1
+      how: 1
+    phrases:
+      "how do i": 2
+      "how to": 2
+      "dead-letter": 2
+  tickets_agent:
+    keywords:
+      ticket: 2
+      tickets: 2
+      tck: 2
+      open: 1
+      closed: 1
+      status: 1
+      list: 1
+      show: 1
+      issue: 1
+      raise: 1
+      priority: 1
+      reporter: 1
+    phrases:
+      "create a ticket": 3
+      "file a ticket": 3
+      "open a ticket": 3
+      "my tickets": 2

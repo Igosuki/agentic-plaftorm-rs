@@ -1,0 +1,12 @@
+default: deny
+roles:
+  user:
+    allow: ["calc.*"]
+  # Other platforms call this one over A2A with their caller's delegated token, so the caller's own roles
+  # (the a2a-mesh demo users) reach calc-mcp unchanged and must be allowed here too.
+  reader:
+    allow: ["calc.*"]
+  engineer:
+    allow: ["calc.*"]
+  admin:
+    allow: ["*"]

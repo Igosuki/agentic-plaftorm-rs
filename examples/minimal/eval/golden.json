@@ -1,0 +1,28 @@
+[
+  {
+    "name": "add_two_numbers",
+    "user": "dev",
+    "input": "What is 17 plus 25?",
+    "expected_agent": "math_agent",
+    "expected_tools": ["calc.add"],
+    "trajectory_match": "exact",
+    "response": {"must_contain": [], "fields": {"answer": 42}}
+  },
+  {
+    "name": "multiply_two_numbers",
+    "user": "dev",
+    "input": "Multiply 12 by 12",
+    "expected_agent": "math_agent",
+    "expected_tools": ["calc.multiply"],
+    "trajectory_match": "exact",
+    "response": {"must_contain": [], "fields": {"answer": 144}}
+  },
+  {
+    "name": "off_topic_rejected",
+    "user": "dev",
+    "input": "Tell me a joke about databases",
+    "expected_agent": "unclassified",
+    "expected_tools": [],
+    "response": {"must_contain": [], "fields": {}}
+  }
+]

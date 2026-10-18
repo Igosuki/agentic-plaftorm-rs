@@ -1,0 +1,47 @@
+[package]
+name = "agentic-platform"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+default = []
+a2a = ["dep:a2a-rs", "dep:buffa-types"]
+adk = ["dep:adk-core", "dep:adk-agent", "dep:adk-runner", "dep:adk-session", "dep:adk-model", "dep:futures"]
+
+[dependencies]
+agentic-core.workspace = true
+rig = { version = "=0.43.0" }
+rig-reqwest = "=0.43.0"
+async-trait = "0.1"
+tokio.workspace = true
+axum.workspace = true
+tower-http.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_yaml.workspace = true
+reqwest.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+schemars.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+jsonschema = { version = "0.58", default-features = false }
+metrics = "0.24"
+metrics-exporter-prometheus = { version = "0.18", default-features = false }
+adk-core = { version = "=2.2.0", optional = true }
+adk-agent = { version = "=2.2.0", optional = true }
+adk-runner = { version = "=2.2.0", optional = true }
+adk-session = { version = "=2.2.0", optional = true }
+adk-model = { version = "=2.2.0", default-features = false, features = ["ollama", "openai", "anthropic", "gemini"], optional = true }
+a2a-rs = { version = "=0.10.0", default-features = false, features = ["jsonrpc-server", "jsonrpc-client"], optional = true }
+buffa-types = { version = "0.9.2", features = ["json"], optional = true }
+futures = { version = "0.3", default-features = false, features = ["std"], optional = true }
+
+[dev-dependencies]
+tower.workspace = true
+wiremock = "0.6"
+tempfile = "3"
+http-body-util = "0.1"

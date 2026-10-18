@@ -1,0 +1,8 @@
+# Overlay for `make up-prebuilt`: package binaries built on the host instead of compiling in Docker.
+services:
+  gateway:
+    build: { target: prebuilt }
+  docs-mcp:
+    build: { target: prebuilt }
+  tickets-mcp:
+    build: { target: prebuilt }

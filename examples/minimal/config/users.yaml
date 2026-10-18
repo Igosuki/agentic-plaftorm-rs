@@ -1,0 +1,3 @@
+# Demo identities with well-known default keys; override each via its *_API_KEY env var.
+users:
+  - {id: dev, api_key: "${DEV_API_KEY:-dev-key}", team: dev-team, roles: [user]}

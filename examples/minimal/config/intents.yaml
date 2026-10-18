@@ -1,0 +1,14 @@
+min_score: 2
+min_margin: 1
+agents:
+  math_agent:
+    keywords:
+      add: 2
+      plus: 2
+      sum: 2
+      total: 1
+      multiply: 2
+      times: 2
+      product: 2
+      calculate: 2
+      math: 2

@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 5s
+scrape_configs:
+  - job_name: mesh
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["mesh-gateway:8082", "minimal:8081"]

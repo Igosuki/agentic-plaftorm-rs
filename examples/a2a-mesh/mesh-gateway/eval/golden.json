@@ -1,0 +1,110 @@
+[
+  {
+    "name": "docs_default_retention",
+    "user": "alice",
+    "input": "What is the default retention in hours for Nimbus Queue?",
+    "expected_agent": "docs_agent",
+    "expected_tools": [
+      "docs.search_docs",
+      "docs.get_doc"
+    ],
+    "trajectory_match": "in_order",
+    "response": {
+      "must_contain": [
+        "168"
+      ],
+      "fields": {
+        "grounded": true
+      }
+    }
+  },
+  {
+    "name": "docs_default_partitions",
+    "user": "bob",
+    "input": "What is the default number of partitions when I create a topic in Nimbus Queue?",
+    "expected_agent": "docs_agent",
+    "expected_tools": [
+      "docs.search_docs",
+      "docs.get_doc"
+    ],
+    "trajectory_match": "in_order",
+    "response": {
+      "must_contain": [
+        "3"
+      ],
+      "fields": {
+        "grounded": true
+      }
+    }
+  },
+  {
+    "name": "ops_consumer_lag",
+    "user": "bob",
+    "input": "Incident: consumer lag on the orders consumer group keeps growing. What should we do?",
+    "expected_agent": "ops_agent",
+    "expected_tools": [],
+    "trajectory_match": "exact",
+    "response": {
+      "must_contain": [
+        "rb-consumer-lag"
+      ],
+      "fields": {}
+    }
+  },
+  {
+    "name": "ops_disk_full",
+    "user": "carol",
+    "input": "Incident: the broker disk full alert fired on node nimbus-2. How do we triage it?",
+    "expected_agent": "ops_agent",
+    "expected_tools": [],
+    "trajectory_match": "exact",
+    "response": {
+      "must_contain": [
+        "rb-disk-full"
+      ],
+      "fields": {}
+    }
+  },
+  {
+    "name": "ops_broker_down",
+    "user": "bob",
+    "input": "Incident: the broker is down and clients cannot connect, please triage.",
+    "expected_agent": "ops_agent",
+    "expected_tools": [],
+    "trajectory_match": "exact",
+    "response": {
+      "must_contain": [
+        "rb-broker-down"
+      ],
+      "fields": {}
+    }
+  },
+  {
+    "name": "math_add",
+    "user": "alice",
+    "input": "What is 17 plus 25?",
+    "expected_agent": "math_agent",
+    "expected_tools": [],
+    "trajectory_match": "exact",
+    "response": {
+      "must_contain": [],
+      "fields": {
+        "answer": 42
+      }
+    }
+  },
+  {
+    "name": "math_multiply",
+    "user": "bob",
+    "input": "Multiply 12 by 12",
+    "expected_agent": "math_agent",
+    "expected_tools": [],
+    "trajectory_match": "exact",
+    "response": {
+      "must_contain": [],
+      "fields": {
+        "answer": 144
+      }
+    }
+  }
+]

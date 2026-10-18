@@ -1,0 +1,16 @@
+[package]
+name = "tickets-mcp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "tickets-mcp"
+path = "src/main.rs"
+
+[dependencies]
+agentic-mcp.workspace = true
+fastmcp-rust.workspace = true
+serde_json.workspace = true
+serde.workspace = true

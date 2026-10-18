@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1280 584" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="telemetry-title telemetry-desc" id="telemetry-root">
+        <title id="telemetry-title">Telemetry flow</title>
+        <desc id="telemetry-desc">Data flow of one request through the pipeline into a Prometheus recorder without user labels, an in-memory metrics store with user and team metrics, and JSON tracing logs, then out to the metrics endpoint, Prometheus, Grafana and the metrics APIs.</desc>
+        <defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Serif:ital@0;1&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400&amp;family=Noto+Sans+TC:wght@400;500;600&amp;family=Noto+Serif+TC:wght@400&amp;display=swap');
+      #telemetry-root { --color-paper:   #f5f5f5;   
+      --color-ink:     #2d3142;   
+      --color-muted:   #4f5d75;   
+      --color-accent:  #bf4520;   
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', 'Noto Serif', 'Noto Serif KR', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace; }
+      #telemetry-root { font-family: var(--font-sans); color: var(--color-ink); }
+      #telemetry-root .diagram-container { width: 100%; overflow-x: auto; }
+      #telemetry-root .diagram-container { overflow-x: visible; }</style>
+          <marker id="telemetry-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+          <marker id="telemetry-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bf4520"/></marker>
+          <marker id="telemetry-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+
+  
+        <!-- OPTIONAL: dot-pattern background. Uncomment the <pattern> and the second <rect> below if you want the dotted paper look. -->
+          <!--
+          <pattern id="telemetry-dots" width="22" height="22" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="0.9" fill="rgba(45,49,66,0.10)"/>
+          </pattern>
+          -->
+        </defs>
+
+        <rect width="100%" height="100%" fill="#f5f5f5"/>
+        <!-- <rect width="100%" height="100%" fill="url(#telemetry-dots)" opacity="0.55"/> -->
+
+        <rect x="24" y="188" width="412" height="144" rx="8" fill="#2d3142" stroke="#2d3142" stroke-width="0.8" fill-opacity="0.02" stroke-opacity="0.10"/>
+        <rect x="36" y="192" width="60" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="66" y="201" fill="#5a6580" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.14em">REQUEST</text>
+        <rect x="460" y="44" width="232" height="444" rx="8" fill="#2d3142" stroke="#2d3142" stroke-width="0.8" fill-opacity="0.02" stroke-opacity="0.10"/>
+        <rect x="472" y="48" width="54" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="499" y="57" fill="#5a6580" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.14em">RECORD</text>
+        <rect x="716" y="44" width="540" height="332" rx="8" fill="#2d3142" stroke="#2d3142" stroke-width="0.8" fill-opacity="0.02" stroke-opacity="0.10"/>
+        <rect x="728" y="48" width="128" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="792" y="57" fill="#5a6580" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.14em">EXPOSE AND CONSUME</text>
+        <line x1="240" y1="268" x2="280" y2="268" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#telemetry-arrow)"/>
+        <path d="M420,244 H440 Q448,244 448,236 V116 Q448,108 456,108 H476" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#telemetry-arrow)"/>
+        <line x1="420" y1="268" x2="476" y2="268" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#telemetry-arrow)"/>
+        <path d="M420,292 H440 Q448,292 448,300 V428 Q448,436 456,436 H476" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#telemetry-arrow)"/>
+        <line x1="676" y1="108" x2="732" y2="108" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#telemetry-arrow)"/>
+        <path d="M676,256 H696 Q704,256 704,248 V224 Q704,216 712,216 H732" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#telemetry-arrow)"/>
+        <path d="M676,280 H696 Q704,280 704,288 V312 Q704,320 712,320 H732" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#telemetry-arrow)"/>
+        <line x1="952" y1="108" x2="1048" y2="108" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#telemetry-arrow-link)"/>
+        <rect x="960" y="88" width="80" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="1000" y="97" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">SCRAPE · 5S</text>
+        <line x1="1144" y1="140" x2="1144" y2="236" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#telemetry-arrow)"/>
+        <rect x="40" y="224" width="200" height="88" rx="6" fill="#f5f5f5"/>
+        <rect x="40" y="224" width="200" height="88" rx="6" fill="#4f5d75" stroke="#5a6580" stroke-width="1" fill-opacity="0.10"/>
+        <text x="140.0" y="252" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">Request</text>
+        <text x="140.0" y="268" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">team from JWT</text>
+        <text x="140.0" y="282" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">application and use_case</text>
+        <text x="140.0" y="296" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">allowlisted</text>
+        <rect x="280" y="220" width="140" height="96" rx="6" fill="#f5f5f5"/>
+        <rect x="280" y="220" width="140" height="96" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="350.0" y="272.0" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">Pipeline</text>
+        <rect x="476" y="76" width="200" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="476" y="76" width="200" height="64" rx="6" fill="#bf4520" stroke="#bf4520" stroke-width="1" fill-opacity="0.08"/>
+        <text x="576.0" y="104" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">Prometheus recorder</text>
+        <text x="576.0" y="120" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">no user labels</text>
+        <rect x="476" y="236" width="200" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="476" y="236" width="200" height="64" rx="6" fill="#bf4520" stroke="#bf4520" stroke-width="1" fill-opacity="0.08"/>
+        <text x="576.0" y="264" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">MetricsStore</text>
+        <text x="576.0" y="280" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">UserMetrics, TeamMetrics</text>
+        <rect x="476" y="404" width="200" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="476" y="404" width="200" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="576.0" y="432" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">tracing logs</text>
+        <text x="576.0" y="448" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">JSON with LOG_FORMAT=json</text>
+        <rect x="732" y="68" width="220" height="80" rx="6" fill="#f5f5f5"/>
+        <rect x="732" y="68" width="220" height="80" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="842.0" y="96" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">GET /metrics</text>
+        <text x="842.0" y="112" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">or metrics_listen</text>
+        <rect x="732" y="184" width="220" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="732" y="184" width="220" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="842.0" y="220.0" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">GET /v1/metrics/me</text>
+        <rect x="732" y="288" width="220" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="732" y="288" width="220" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="842.0" y="316" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">GET /v1/metrics/teams</text>
+        <text x="842.0" y="332" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">admin</text>
+        <rect x="1048" y="76" width="192" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="1048" y="76" width="192" height="64" rx="6" fill="#2d3142" stroke="#4f5d75" stroke-width="1" fill-opacity="0.05"/>
+        <text x="1144.0" y="112.0" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">Prometheus</text>
+        <rect x="1048" y="236" width="192" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="1048" y="236" width="192" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="1144.0" y="264" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">Grafana</text>
+        <text x="1144.0" y="280" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">Agentic Platform dashboard</text>
+        <line x1="40" y1="520" x2="1240" y2="520" stroke="#2d3142" stroke-width="0.8" stroke-opacity="0.10"/>
+        <text x="40" y="536" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" letter-spacing="0.18em">LEGEND</text>
+        <rect x="40" y="546" width="14" height="10" rx="2" fill="#bf4520" stroke="#bf4520" stroke-width="1" fill-opacity="0.08"/>
+        <text x="62" y="556" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Cardinality boundary</text>
+        <rect x="240" y="546" width="14" height="10" rx="2" fill="#4f5d75" stroke="#5a6580" stroke-width="1" fill-opacity="0.10"/>
+        <text x="262" y="556" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Input</text>
+        <rect x="360" y="546" width="14" height="10" rx="2" fill="#2d3142" stroke="#4f5d75" stroke-width="1" fill-opacity="0.05"/>
+        <text x="382" y="556" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Store</text>
+        <line x1="480" y1="551" x2="508" y2="551" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#telemetry-arrow)"/>
+        <text x="516" y="556" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">Data flow</text>
+        <line x1="640" y1="551" x2="668" y2="551" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#telemetry-arrow-link)"/>
+        <text x="676" y="556" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif">HTTP scrape</text>
+
+      </svg>

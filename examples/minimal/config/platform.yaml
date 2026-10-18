@@ -1,0 +1,37 @@
+app: minimal
+listen: ${LISTEN_ADDR:-0.0.0.0:8081}
+users_file: users.yaml
+intents_file: intents.yaml
+policies_file: policies.yaml
+prompts_dir: prompts
+prompt_state_file: ${PROMPT_STATE_FILE:-./data/prompt-state.json}
+engine: ${AGENT_ENGINE:-rig}
+models:
+  default: ${DEFAULT_MODEL:-ollama:gpt-oss}
+# Optional AI gateway (LiteLLM Proxy or any OpenAI-compatible one), used only by `gateway:<alias>` model specs.
+# Unused unless DEFAULT_MODEL / COORDINATOR_MODEL (or a prompt's `model`) is `gateway:<alias>`; the key is read then.
+# Per-team virtual keys (env var names; teams without one use LLM_GATEWAY_API_KEY):
+#   team_keys: {docs-team: LLM_GATEWAY_KEY_DOCS_TEAM}
+llm_gateway:
+  url: ${LLM_GATEWAY_URL:-http://localhost:4000}
+  api_key_env: LLM_GATEWAY_API_KEY
+  send_metadata: ${LLM_GATEWAY_SEND_METADATA:-true}
+  timeout_secs: ${LLM_GATEWAY_TIMEOUT_SECS:-120}
+pricing:
+  "ollama:gpt-oss": {input: 0.0, output: 0.0}
+  "gateway:default": {input: 0.0, output: 0.0}
+guard: {max_attempts: 3, max_total_tokens: 60000, backoff_base_ms: 250}
+rate_limit: {requests_per_minute_per_team: 60, auth_rate_limit_per_minute: 10}
+applications: [minimal]
+use_cases: [math_agent]
+# metrics_listen: 0.0.0.0:9100
+routing: {unclassified: reject}
+tool_visibility: filtered
+# Needs a build with the `a2a` cargo feature. Accepts gateway tokens and the delegated `a2a` / `a2a:minimal` tokens other platforms mint.
+a2a:
+  server:
+    enabled: ${A2A_ENABLED:-false}
+    path: /a2a
+    public_url: ${A2A_PUBLIC_URL:-http://localhost:8081/a2a}
+mcp_servers:
+  calc: {url: "${CALC_MCP_URL:-http://localhost:3003/mcp}"}

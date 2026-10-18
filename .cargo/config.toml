@@ -1,0 +1,3 @@
+[env]
+# rustc nightly-2026-09-11 overflows its stack compiling asupersync/rmcp-sized crates.
+RUST_MIN_STACK = "1073741824"

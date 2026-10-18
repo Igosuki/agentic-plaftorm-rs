@@ -1,0 +1,73 @@
+[
+  {
+    "name": "docs_default_retention",
+    "user": "alice",
+    "input": "What is the default retention in hours for Nimbus Queue?",
+    "expected_agent": "docs_agent",
+    "expected_tools": ["docs.search_docs", "docs.get_doc"],
+    "trajectory_match": "in_order",
+    "response": {"must_contain": ["168"], "fields": {"grounded": true}}
+  },
+  {
+    "name": "docs_default_partitions",
+    "user": "alice",
+    "input": "What is the default number of partitions when I create a topic?",
+    "expected_agent": "docs_agent",
+    "expected_tools": ["docs.search_docs", "docs.get_doc"],
+    "trajectory_match": "in_order",
+    "response": {"must_contain": ["3"], "fields": {"grounded": true}}
+  },
+  {
+    "name": "docs_dlq_max_attempts",
+    "user": "dave",
+    "input": "How many delivery attempts before a message moves to the dead-letter queue?",
+    "expected_agent": "docs_agent",
+    "expected_tools": ["docs.search_docs", "docs.get_doc"],
+    "trajectory_match": "in_order",
+    "response": {"must_contain": ["5"], "fields": {"grounded": true}}
+  },
+  {
+    "name": "docs_rate_limit_publish",
+    "user": "bob",
+    "input": "What is the default publish rate limit?",
+    "expected_agent": "docs_agent",
+    "expected_tools": ["docs.search_docs", "docs.get_doc"],
+    "trajectory_match": "in_order",
+    "response": {"must_contain": ["1000"], "fields": {"grounded": true}}
+  },
+  {
+    "name": "tickets_list_as_reader",
+    "user": "alice",
+    "input": "List my open tickets",
+    "expected_agent": "tickets_agent",
+    "expected_tools": ["tickets.list_tickets"],
+    "trajectory_match": "in_order",
+    "response": {"must_contain": ["TCK-1001"], "fields": {"action": "listed"}}
+  },
+  {
+    "name": "tickets_create_as_engineer",
+    "user": "bob",
+    "input": "Create a ticket titled 'Broker disk almost full' with high priority and description 'data_dir is at 95 percent'",
+    "expected_agent": "tickets_agent",
+    "expected_tools": ["tickets.create_ticket"],
+    "trajectory_match": "in_order",
+    "response": {"must_contain": ["Broker disk almost full"], "fields": {"action": "created"}}
+  },
+  {
+    "name": "tickets_create_denied_as_reader",
+    "user": "alice",
+    "input": "Create a ticket titled 'Broker disk almost full' with high priority and description 'data_dir is at 95 percent'",
+    "expected_agent": "tickets_agent",
+    "expected_tools": ["tickets.create_ticket"],
+    "trajectory_match": "in_order",
+    "response": {"must_contain": [], "fields": {"action": "denied"}}
+  },
+  {
+    "name": "unclassified_weather",
+    "user": "alice",
+    "input": "What's the weather in Paris today?",
+    "expected_agent": "unclassified",
+    "expected_tools": [],
+    "response": {"must_contain": [], "fields": {}}
+  }
+]

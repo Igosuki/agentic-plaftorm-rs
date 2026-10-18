@@ -1,0 +1,5 @@
+# Demo identities with well-known default keys; override each via its *_API_KEY env var.
+users:
+  - {id: alice, api_key: "${ALICE_API_KEY:-alice-key}", team: docs-team, roles: [reader]}
+  - {id: bob, api_key: "${BOB_API_KEY:-bob-key}", team: platform-team, roles: [engineer]}
+  - {id: carol, api_key: "${CAROL_API_KEY:-carol-key}", team: platform-team, roles: [admin]}

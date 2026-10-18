@@ -1,0 +1,10 @@
+id: math_agent
+live: 1.0.0
+versions:
+  - version: 1.0.0
+    created_at: 2026-10-01T00:00:00Z
+    tags: [baseline, remote]
+    model: a2a:minimal
+    temperature: 0.0
+    template: |
+      Solve the arithmetic request below with your calculator tools; do not compute it yourself.

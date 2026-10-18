@@ -1,0 +1,53 @@
+min_score: 2
+min_margin: 2
+agents:
+  docs_agent:
+    keywords:
+      docs: 2
+      documentation: 2
+      nimbus: 2
+      configure: 2
+      configuration: 2
+      config: 2
+      default: 2
+      retention: 2
+      partition: 2
+      partitions: 2
+      install: 1
+      authentication: 2
+      mtls: 2
+      limit: 1
+      how: 1
+    phrases:
+      "how do i": 2
+      "how to": 2
+  ops_agent:
+    keywords:
+      ops: 2
+      incident: 3
+      incidents: 3
+      lag: 2
+      lagging: 2
+      disk: 2
+      full: 1
+      broker: 1
+      outage: 2
+      down: 1
+      alert: 2
+      runbook: 2
+      triage: 2
+      paging: 2
+    phrases:
+      "consumer lag": 3
+      "disk full": 3
+  math_agent:
+    keywords:
+      math: 2
+      add: 2
+      plus: 2
+      sum: 2
+      total: 1
+      multiply: 2
+      times: 2
+      product: 2
+      calculate: 2

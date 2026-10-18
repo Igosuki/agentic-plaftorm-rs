@@ -1,0 +1,37 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/agentic-core",
+    "crates/agentic-platform",
+    "crates/agentic-eval",
+    "examples/docs-assistant",
+    "examples/minimal",
+    "examples/a2a-mesh/mesh-gateway",
+]
+exclude = ["mcp", "examples/a2a-mesh/ops-agent"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[workspace.dependencies]
+agentic-core = { path = "crates/agentic-core" }
+agentic-platform = { path = "crates/agentic-platform" }
+
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "signal", "time", "sync"] }
+axum = "0.8"
+tower = "0.5"
+tower-http = { version = "0.6", features = ["trace"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+reqwest = { version = "0.13", default-features = false, features = ["json", "rustls"] }
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+schemars = "1"
+uuid = { version = "1", features = ["v4"] }
+clap = { version = "4", features = ["derive"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }

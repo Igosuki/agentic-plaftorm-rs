@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guard attempt loop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@400&family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+TC:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;
+      --color-ink:     #2d3142;
+      --color-muted:   #4f5d75;
+      --color-accent:  #bf4520;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', 'Noto Serif', 'Noto Serif KR', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1320px; width: 100%; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 1280px; display: block; }
+    @media print {
+      .diagram-container { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">State machine · Platform architecture</p>
+    <h1>Guard attempt loop</h1>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 1280 744" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="guard-loop-title guard-loop-desc">
+        <title id="guard-loop-title">Guard attempt loop</title>
+        <desc id="guard-loop-desc">State machine of one guard attempt: an engine result is validated or classified as a schema violation, hallucination, max turns, infrastructure error, or remote rejection; retryable classes pass a budget choice back to a new attempt, otherwise the run fails with 502 agent_failed.</desc>
+        <defs>
+          <marker id="guard-loop-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+          <marker id="guard-loop-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bf4520"/></marker>
+          <marker id="guard-loop-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+        <rect x="628" y="152" width="180" height="172" rx="8" fill="rgba(79,93,117,0.035)" stroke="rgba(45,49,66,0.12)"/>
+        <text x="640" y="168" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.14em">RETRIED · VALIDATION</text>
+        <rect x="628" y="380" width="180" height="172" rx="8" fill="rgba(79,93,117,0.035)" stroke="rgba(45,49,66,0.12)"/>
+        <text x="640" y="396" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.14em">RETRIED · ENGINE</text>
+        <path d="M46 372 H72" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <path d="M212 335 H252 a8 8 0 0 0 8 -8 V108 a8 8 0 0 1 8 -8 H288" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="160" y="200" width="92" height="22" rx="2" fill="#f5f5f5"/>
+        <text x="206.0" y="209" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">engine</text>
+        <text x="206.0" y="219" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">returned text</text>
+        <path d="M212 372 H276 a8 8 0 0 1 8 8 V428 a8 8 0 0 0 8 8 H648" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="406" y="416" width="128" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="470" y="425" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">tool loop exhausted</text>
+        <path d="M212 391 H248 a8 8 0 0 1 8 8 V500 a8 8 0 0 0 8 8 H648" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="384" y="488" width="172" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="470" y="497" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">provider or transport error</text>
+        <path d="M212 409 H220 a8 8 0 0 1 8 8 V604 a8 8 0 0 0 8 8 H648" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="392" y="592" width="156" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="470" y="601" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">remote refused, a2a only</text>
+        <path d="M428 100 H648" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="454" y="80" width="168" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="538" y="89" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">schema and validate() pass</text>
+        <path d="M381 128 V200 a8 8 0 0 0 8 8 H648" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="460" y="188" width="120" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="520" y="197" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">bad JSON or schema</text>
+        <path d="M335 128 V272 a8 8 0 0 0 8 8 H648" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="440" y="260" width="160" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="520" y="269" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">not supported by evidence</text>
+        <path d="M788 208 H968" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="830" y="178" width="96" height="22" rx="2" fill="#f5f5f5"/>
+        <text x="878" y="187" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">re-prompt with</text>
+        <text x="878" y="197" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">the error</text>
+        <path d="M788 280 H968" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="820" y="250" width="116" height="22" rx="2" fill="#f5f5f5"/>
+        <text x="878" y="259" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">re-prompt with an</text>
+        <text x="878" y="269" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">evidence summary</text>
+        <path d="M788 436 H968" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="814" y="406" width="128" height="22" rx="2" fill="#f5f5f5"/>
+        <text x="878" y="415" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">"answer now" nudge,</text>
+        <text x="878" y="425" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">no backoff</text>
+        <path d="M788 508 H968" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="812" y="478" width="132" height="22" rx="2" fill="#f5f5f5"/>
+        <text x="878" y="487" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">exponential backoff,</text>
+        <text x="878" y="497" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">same prompt</text>
+        <path d="M968 353 H212" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="512" y="333" width="156" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="590" y="342" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">attempts and tokens left</text>
+        <path d="M1028 536 V584" fill="none" stroke="#bf4520" stroke-width="1.4" marker-end="url(#guard-loop-arrow-accent)"/>
+        <rect x="1038" y="552" width="108" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="1092.0" y="561" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">budget exhausted</text>
+        <path d="M788 612 H958" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <rect x="841" y="592" width="64" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="873" y="601" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">no retry</text>
+        <path d="M1098 612 H1208" fill="none" stroke="#bf4520" stroke-width="1.4" marker-end="url(#guard-loop-arrow-accent)"/>
+        <rect x="1111" y="582" width="84" height="22" rx="2" fill="#f5f5f5"/>
+        <text x="1153" y="591" fill="#bf4520" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">502</text>
+        <text x="1153" y="601" fill="#bf4520" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">agent_failed</text>
+        <path d="M788 100 H1208 a8 8 0 0 1 8 8 V604" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#guard-loop-arrow)"/>
+        <circle cx="1216" cy="612" r="8" fill="none" stroke="#2d3142" stroke-width="1.2"/><circle cx="1216" cy="612" r="5" fill="#2d3142"/>
+        <circle cx="40" cy="372" r="6" fill="#2d3142"/>
+        <rect x="72" y="316" width="140" height="112" rx="6" fill="#f5f5f5"/>
+        <rect x="72" y="316" width="140" height="112" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="142.0" y="376" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">Attempt</text>
+        <rect x="288" y="72" width="140" height="56" rx="6" fill="#f5f5f5"/>
+        <rect x="288" y="72" width="140" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="358.0" y="105" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">Validate</text>
+        <rect x="648" y="72" width="140" height="56" rx="6" fill="#f5f5f5"/>
+        <rect x="648" y="72" width="140" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="718.0" y="105" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">Ok</text>
+        <rect x="648" y="180" width="140" height="56" rx="6" fill="#f5f5f5"/>
+        <rect x="648" y="180" width="140" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="718.0" y="213" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">SchemaViolation</text>
+        <rect x="648" y="252" width="140" height="56" rx="6" fill="#f5f5f5"/>
+        <rect x="648" y="252" width="140" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="718.0" y="285" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">Hallucination</text>
+        <rect x="648" y="408" width="140" height="56" rx="6" fill="#f5f5f5"/>
+        <rect x="648" y="408" width="140" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="718.0" y="441" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">MaxTurns</text>
+        <rect x="648" y="480" width="140" height="56" rx="6" fill="#f5f5f5"/>
+        <rect x="648" y="480" width="140" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="718.0" y="513" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">Infra</text>
+        <rect x="648" y="584" width="140" height="56" rx="6" fill="#f5f5f5"/>
+        <rect x="648" y="584" width="140" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="718.0" y="617" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">Rejected</text>
+        <rect x="968" y="176" width="120" height="360" rx="6" fill="#f5f5f5"/>
+        <rect x="968" y="176" width="120" height="360" rx="6" fill="rgba(45,49,66,0.02)" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3"/>
+        <rect x="976" y="182" width="50" height="12" rx="2" fill="transparent" stroke="#4f5d75" stroke-opacity="0.5" stroke-width="0.8"/>
+        <text x="1001.0" y="191" fill="#4f5d75" font-size="7" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">CHOICE</text>
+        <text x="1028.0" y="352" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">budget</text>
+        <text x="1028.0" y="368" fill="#4f5d75" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">choice</text>
+        <rect x="958" y="584" width="140" height="56" rx="6" fill="#f5f5f5"/>
+        <rect x="958" y="584" width="140" height="56" rx="6" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1"/>
+        <text x="1028.0" y="617" fill="#2d3142" font-size="12" font-family="'Geist', system-ui, sans-serif" text-anchor="middle" font-weight="600">Failed</text>
+        <line x1="40" y1="680" x2="1240" y2="680" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+        <text x="40" y="696" fill="#4f5d75" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.18em">LEGEND</text>
+        <rect x="40" y="708" width="28" height="16" rx="4" fill="rgba(79,93,117,0.035)" stroke="rgba(45,49,66,0.12)"/>
+        <text x="78" y="719" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Retry class (budget permitting)</text>
+        <rect x="300" y="708" width="28" height="16" rx="3" fill="rgba(45,49,66,0.02)" stroke="#4f5d75" stroke-dasharray="4,3"/>
+        <text x="338" y="719" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Choice pseudo-state</text>
+        <rect x="500" y="708" width="28" height="16" rx="3" fill="rgba(191,69,32,0.08)" stroke="#bf4520"/>
+        <text x="538" y="719" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Failure outcome</text>
+        <circle cx="684" cy="716" r="5" fill="#2d3142"/>
+        <text x="698" y="719" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Start</text>
+        <circle cx="760" cy="716" r="7" fill="none" stroke="#2d3142"/><circle cx="760" cy="716" r="4" fill="#2d3142"/>
+        <text x="774" y="719" fill="#4f5d75" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">End</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

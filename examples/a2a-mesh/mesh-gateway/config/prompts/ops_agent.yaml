@@ -1,0 +1,12 @@
+id: ops_agent
+live: 1.0.0
+versions:
+  - version: 1.0.0
+    created_at: 2026-10-01T00:00:00Z
+    tags: [baseline, remote]
+    model: a2a:ops
+    temperature: 0.0
+    template: |
+      Triage the operational incident described below.
+      Name the matching runbook in runbook_id (for example rb-consumer-lag), or null when none applies.
+      severity is low, medium or high. steps lists the concrete actions in order and must not be empty.

@@ -1,0 +1,42 @@
+app: docs-assistant
+listen: ${LISTEN_ADDR:-0.0.0.0:8080}
+auth:
+  jwt_secret_env: PLATFORM_JWT_SECRET
+  issuer: agentic-platform
+  token_ttl_secs: 3600
+  delegated_ttl_secs: 60
+users_file: users.yaml
+intents_file: intents.yaml
+policies_file: policies.yaml
+prompts_dir: prompts
+prompt_state_file: ${PROMPT_STATE_FILE:-./data/prompt-state.json}
+engine: ${AGENT_ENGINE:-rig}
+models:
+  default: ${DEFAULT_MODEL:-ollama:gpt-oss}
+  coordinator: ${COORDINATOR_MODEL:-ollama:gpt-oss}
+# Optional AI gateway (LiteLLM Proxy or any OpenAI-compatible one), used only by `gateway:<alias>` model specs.
+# Unused unless DEFAULT_MODEL / COORDINATOR_MODEL (or a prompt's `model`) is `gateway:<alias>`; the key is read then.
+# Per-team virtual keys (env var names; teams without one use LLM_GATEWAY_API_KEY):
+#   team_keys: {docs-team: LLM_GATEWAY_KEY_DOCS_TEAM}
+llm_gateway:
+  url: ${LLM_GATEWAY_URL:-http://localhost:4000}
+  api_key_env: LLM_GATEWAY_API_KEY
+  send_metadata: ${LLM_GATEWAY_SEND_METADATA:-true}
+  timeout_secs: ${LLM_GATEWAY_TIMEOUT_SECS:-120}
+pricing:
+  "ollama:gpt-oss": {input: 0.0, output: 0.0}
+  "gateway:default": {input: 0.0, output: 0.0}
+  "openai:gpt-4.1-mini": {input: 0.40, output: 1.60}
+guard: {max_attempts: 3, max_total_tokens: 60000, backoff_base_ms: 250}
+rate_limit: {requests_per_minute_per_team: 60, auth_rate_limit_per_minute: 10}
+# Caller-supplied `application` / `use_case` become metric labels, so only these values are accepted.
+applications: [docs-assistant]
+use_cases: [docs_agent, tickets_agent]
+# Serve /metrics only on this address instead of the main listener (then scrape it from there):
+# metrics_listen: 0.0.0.0:9100
+routing: {unclassified: llm}
+# `all` exposes every tool to the model so the MCP servers' policy middleware does the denying.
+tool_visibility: all
+mcp_servers:
+  docs: {url: "${DOCS_MCP_URL:-http://localhost:3001/mcp}"}
+  tickets: {url: "${TICKETS_MCP_URL:-http://localhost:3002/mcp}"}

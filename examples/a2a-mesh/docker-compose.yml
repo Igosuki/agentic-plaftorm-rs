@@ -1,0 +1,150 @@
+# Run from the repo root: docker compose -f examples/a2a-mesh/docker-compose.yml --env-file .env up --build
+x-build: &build
+  context: ../..
+  dockerfile: deploy/Dockerfile
+
+x-mcp-env: &mcp-env
+  PLATFORM_JWT_SECRET: ${PLATFORM_JWT_SECRET:?set in .env}
+  JWT_ISSUER: agentic-platform
+  RUST_LOG: ${RUST_LOG:-info}
+
+x-llm-env: &llm-env
+  DEFAULT_MODEL: ${DEFAULT_MODEL:-ollama:gpt-oss}
+  OLLAMA_API_BASE_URL: ${OLLAMA_API_BASE_URL:-http://host.docker.internal:11434}
+  OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+  GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+
+services:
+  mesh-gateway:
+    build:
+      <<: *build
+      # a2a is a dependency feature of mesh-gateway, so CARGO_FEATURES stays empty.
+      args: { WORKSPACE: ".", BIN: mesh-gateway, CARGO_FEATURES: "" }
+    ports: ["127.0.0.1:8082:8082"]
+    environment:
+      <<: *llm-env
+      LISTEN_ADDR: 0.0.0.0:8082
+      PLATFORM_CONFIG: /app/config/platform.yaml
+      PLATFORM_JWT_SECRET: ${PLATFORM_JWT_SECRET:?set in .env}
+      DOCS_MCP_URL: http://docs-mcp:3001/mcp
+      OPS_AGENT_URL: http://ops-agent:8090
+      MINIMAL_A2A_URL: http://minimal:8081/a2a
+      A2A_PUBLIC_URL: http://localhost:8082/a2a
+      PROMPT_STATE_FILE: /data/prompt-state.json
+      RUST_LOG: ${RUST_LOG:-info}
+    volumes:
+      - ./mesh-gateway/config:/app/config:ro
+      - mesh-data:/data
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    depends_on:
+      docs-mcp: { condition: service_healthy }
+      ops-agent: { condition: service_healthy }
+      minimal: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8082/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  docs-mcp:
+    build:
+      <<: *build
+      args: { WORKSPACE: mcp, BIN: docs-mcp }
+    expose: ["3001"]
+    environment:
+      <<: *mcp-env
+      MCP_SERVER_NAME: docs
+      MCP_LISTEN: 0.0.0.0:3001
+      POLICY_FILE: /app/config/policies.yaml
+    volumes:
+      - ./mesh-gateway/config:/app/config:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3001/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # adk-rust agent in its own Cargo workspace, served over A2A v1 (adk-server v1 handlers plus the wire shim).
+  ops-agent:
+    build:
+      <<: *build
+      args: { WORKSPACE: examples/a2a-mesh/ops-agent, BIN: ops-agent }
+    ports: ["127.0.0.1:8090:8090"]
+    environment:
+      OPS_MODEL: ${OPS_MODEL:-ollama:gpt-oss}
+      OPS_LISTEN: 0.0.0.0:8090
+      OPS_PUBLIC_URL: http://ops-agent:8090/
+      OPS_JWT_AUDIENCE: a2a:ops
+      PLATFORM_JWT_SECRET: ${PLATFORM_JWT_SECRET:?set in .env}
+      OLLAMA_API_BASE_URL: ${OLLAMA_API_BASE_URL:-http://host.docker.internal:11434}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      RUST_LOG: ${RUST_LOG:-info}
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8090/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # The minimal example's gateway, serving math_agent over A2A (built with the a2a feature).
+  minimal:
+    build:
+      <<: *build
+      args: { WORKSPACE: ".", BIN: minimal, CARGO_FEATURES: a2a }
+    ports: ["127.0.0.1:8081:8081"]
+    environment:
+      <<: *llm-env
+      LISTEN_ADDR: 0.0.0.0:8081
+      PLATFORM_CONFIG: /app/config/platform.yaml
+      PLATFORM_JWT_SECRET: ${PLATFORM_JWT_SECRET:?set in .env}
+      A2A_ENABLED: "true"
+      A2A_PUBLIC_URL: http://minimal:8081/a2a
+      CALC_MCP_URL: http://calc-mcp:3003/mcp
+      PROMPT_STATE_FILE: /data/prompt-state.json
+      RUST_LOG: ${RUST_LOG:-info}
+    volumes:
+      - ../minimal/config:/app/config:ro
+      - minimal-data:/data
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    depends_on:
+      calc-mcp: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8081/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  calc-mcp:
+    build:
+      <<: *build
+      args: { WORKSPACE: mcp, BIN: calc-mcp }
+    expose: ["3003"]
+    environment:
+      <<: *mcp-env
+      MCP_SERVER_NAME: calc
+      MCP_LISTEN: 0.0.0.0:3003
+      POLICY_FILE: /app/config/policies.yaml
+    volumes:
+      - ../minimal/config:/app/config:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3003/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  prometheus:
+    image: prom/prometheus:latest
+    profiles: [monitoring]
+    ports: ["127.0.0.1:9090:9090"]
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on: [mesh-gateway]
+
+volumes:
+  mesh-data:
+  minimal-data:

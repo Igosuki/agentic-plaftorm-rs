@@ -1,0 +1,65 @@
+# Shared AI-gateway tier: one LiteLLM Proxy for every platform instance. Start with:
+#   docker compose --env-file .env -f deploy/llm-gateway/docker-compose.yml up -d
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:v1.103.3
+    restart: unless-stopped
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    ports: ["127.0.0.1:4000:4000"]
+    environment:
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:?run `make env` or set LITELLM_MASTER_KEY (must start with sk-)}
+      DATABASE_URL: postgresql://litellm:${LITELLM_POSTGRES_PASSWORD:-litellm}@postgres:5432/litellm
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      # Provider keys for the openai/anthropic aliases in config.yaml.
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    volumes:
+      - ./litellm-config.yaml:/app/config.yaml:ro
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    networks: [llm-gateway]
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request as u; u.urlopen('http://localhost:4000/health/liveliness', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: litellm
+      POSTGRES_PASSWORD: ${LITELLM_POSTGRES_PASSWORD:-litellm}
+      POSTGRES_DB: litellm
+    volumes:
+      - litellm-postgres:/var/lib/postgresql/data
+    networks: [llm-gateway]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U litellm -d litellm"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - litellm-redis:/data
+    networks: [llm-gateway]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+networks:
+  llm-gateway:
+    name: llm-gateway
+
+volumes:
+  litellm-postgres:
+  litellm-redis:

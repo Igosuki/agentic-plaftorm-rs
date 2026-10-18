@@ -1,0 +1,15 @@
+# Overlay for the root docker-compose.yml: routes the docs-assistant through the shared gateway tier.
+#   docker compose -f docker-compose.yml -f deploy/llm-gateway/docker-compose.use-gateway.yml up -d
+services:
+  gateway:
+    environment:
+      LLM_GATEWAY_URL: http://litellm:4000
+      DEFAULT_MODEL: gateway:default
+      COORDINATOR_MODEL: gateway:default
+      # A LiteLLM virtual key; the master key is accepted for local development.
+      LLM_GATEWAY_API_KEY: ${LLM_GATEWAY_API_KEY:-${LITELLM_MASTER_KEY:?set LLM_GATEWAY_API_KEY or LITELLM_MASTER_KEY in .env}}
+    networks: [default, llm-gateway]
+
+networks:
+  llm-gateway:
+    external: true

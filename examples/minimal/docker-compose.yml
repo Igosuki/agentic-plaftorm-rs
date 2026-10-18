@@ -1,0 +1,52 @@
+x-build: &build
+  context: ../..
+  dockerfile: deploy/Dockerfile
+
+services:
+  minimal:
+    build:
+      <<: *build
+      args: { WORKSPACE: ".", BIN: minimal, CARGO_FEATURES: "${CARGO_FEATURES:-}" }
+    ports: ["127.0.0.1:8081:8081"]
+    environment:
+      LISTEN_ADDR: 0.0.0.0:8081
+      PLATFORM_CONFIG: /app/config/platform.yaml
+      PLATFORM_JWT_SECRET: ${PLATFORM_JWT_SECRET:?set in .env}
+      AGENT_ENGINE: ${AGENT_ENGINE:-rig}
+      DEFAULT_MODEL: ${DEFAULT_MODEL:-ollama:gpt-oss}
+      OLLAMA_API_BASE_URL: ${OLLAMA_API_BASE_URL:-http://host.docker.internal:11434}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      CALC_MCP_URL: http://calc-mcp:3003/mcp
+      PROMPT_STATE_FILE: /data/prompt-state.json
+      RUST_LOG: ${RUST_LOG:-info}
+    volumes:
+      - ./config:/app/config:ro
+      - minimal-data:/data
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    depends_on:
+      calc-mcp: { condition: service_healthy }
+
+  calc-mcp:
+    build:
+      <<: *build
+      args: { WORKSPACE: mcp, BIN: calc-mcp }
+    expose: ["3003"]
+    environment:
+      PLATFORM_JWT_SECRET: ${PLATFORM_JWT_SECRET:?set in .env}
+      JWT_ISSUER: agentic-platform
+      MCP_SERVER_NAME: calc
+      MCP_LISTEN: 0.0.0.0:3003
+      POLICY_FILE: /app/config/policies.yaml
+      RUST_LOG: ${RUST_LOG:-info}
+    volumes:
+      - ./config:/app/config:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3003/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  minimal-data:
