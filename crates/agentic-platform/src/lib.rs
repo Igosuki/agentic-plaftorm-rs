@@ -2,6 +2,8 @@
 pub mod a2a_server;
 pub mod config;
 pub mod coordinator;
+#[cfg(feature = "ui")]
+pub mod display;
 pub mod engine;
 pub mod error;
 pub mod gateway;

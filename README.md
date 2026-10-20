@@ -122,6 +122,30 @@ make up-with-gateway        # LiteLLM tier + docs-assistant using DEFAULT_MODEL=
 
 [ARCHITECTURE.md section 13](docs/ARCHITECTURE.md#13-ai-gateway-optional) explains how a gateway tier improves scaling, resilience, key custody and cost governance, and what stays in the platform.
 
+### Display agent (A2UI)
+
+With the `ui` cargo feature (implies `adk`), a request can ask for its validated output to be laid out as an [A2UI](https://a2ui.org) v0.9 surface. The specialist is unchanged; after the guard accepts its output, a separate display-agent call (prompt `display_agent`, model `display.model`, default `models.default`) emits components only. Every shown value is a JSON-pointer binding into the output, the gateway sends the output itself as the data model, and a layout whose paths do not resolve is re-prompted up to `display.max_attempts` times.
+
+```sh
+make run-local FEATURES=ui
+curl -s localhost:8080/v1/agents/run -H "authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"input": "How do I configure a dead-letter queue?", "ui": "a2ui"}'
+```
+
+The response gains `ui` (`{protocol, version, surface_id, messages}`, `null` if it could not be rendered) and `trace.display` (`status` is `rendered`, `failed` or `unavailable`, with `attempts`, `reason`, `prompt` and `usage`). The validated `output` is returned either way. Without `"ui"` nothing changes and no extra model call is made. A gateway built without the feature, or with `display.enabled: false` or no `display_agent` prompt, answers with `status: "unavailable"` and a reason.
+
+## UI
+
+`ui/` is a Vite + React client that signs in with an API key, runs prompts with `"ui": "a2ui"`, renders the returned A2UI surface with `@zavora-ai/adk-ui-react`, and shows the request trace (attempts, tool calls, display-agent status, usage and cost) beside it. When `ui` is `null` it shows the validated `output` and the `trace.display` failure reason.
+
+```sh
+make ui-install
+make ui-dev                      # http://localhost:5173, proxies /auth /v1 /admin to localhost:8080
+GATEWAY_URL=http://host:8080 make ui-dev
+```
+
+Open `http://localhost:5173/?fixture=docs` (or `?fixture=failed`) to demo the UI without a gateway. `make ui-build` type-checks and builds to `ui/dist`.
+
 ## Starting a new agentic project
 
 Copy `examples/minimal` and follow [its checklist](examples/minimal/README.md). The reuse surface is:
@@ -145,8 +169,8 @@ Most of a project lives in YAML config: platform, users, intents, policies and p
 ## Development
 
 ```sh
-make test       # both workspaces, plus agentic-platform with the `adk` feature
-make clippy     # both workspaces, -D warnings, plus the `adk` feature
+make test       # both workspaces, plus agentic-platform with the `adk` and `ui` features
+make clippy     # both workspaces, -D warnings, plus the `adk` and `ui` features
 ```
 
 `.cargo/config.toml` raises `RUST_MIN_STACK` because the pinned nightly overflows rustc's stack on some dependencies. If rustc still segfaults, run `ulimit -s unlimited` first.

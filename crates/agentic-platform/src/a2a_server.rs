@@ -299,6 +299,7 @@ fn run_request(m: &Message) -> RunRequest {
         application: meta_str(&meta, "application"),
         use_case: meta_str(&meta, "use_case"),
         agent_hint: hint,
+        ui: None,
     }
 }
 

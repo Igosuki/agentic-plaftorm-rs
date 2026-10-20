@@ -7,6 +7,7 @@ publish.workspace = true
 
 [features]
 default = []
+ui = ["adk", "dep:adk-ui"]
 a2a = ["dep:a2a-rs", "dep:buffa-types"]
 adk = ["dep:adk-core", "dep:adk-agent", "dep:adk-runner", "dep:adk-session", "dep:adk-model", "dep:futures"]
 
@@ -35,6 +36,7 @@ adk-core = { version = "=2.2.0", optional = true }
 adk-agent = { version = "=2.2.0", optional = true }
 adk-runner = { version = "=2.2.0", optional = true }
 adk-session = { version = "=2.2.0", optional = true }
+adk-ui = { version = "=2.2.0", optional = true }
 adk-model = { version = "=2.2.0", default-features = false, features = ["ollama", "openai", "anthropic", "gemini"], optional = true }
 a2a-rs = { version = "=0.10.0", default-features = false, features = ["jsonrpc-server", "jsonrpc-client"], optional = true }
 buffa-types = { version = "0.9.2", features = ["json"], optional = true }

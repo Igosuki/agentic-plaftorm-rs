@@ -28,6 +28,8 @@ pricing:
   "gateway:default": {input: 0.0, output: 0.0}
   "openai:gpt-4.1-mini": {input: 0.40, output: 1.60}
 guard: {max_attempts: 3, max_total_tokens: 60000, backoff_base_ms: 250}
+# Opt-in per request with `"ui": "a2ui"`; needs the `ui` cargo feature. `model` defaults to models.default.
+display: {enabled: true, max_attempts: 2}
 rate_limit: {requests_per_minute_per_team: 60, auth_rate_limit_per_minute: 10}
 # Caller-supplied `application` / `use_case` become metric labels, so only these values are accepted.
 applications: [docs-assistant]

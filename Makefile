@@ -1,13 +1,14 @@
 COMPOSE := docker compose
 MCP := --manifest-path mcp/Cargo.toml --workspace
 ADK_PKGS := -p agentic-platform -p docs-assistant -p minimal --features docs-assistant/adk,minimal/adk
+UI_PKGS := -p agentic-platform -p docs-assistant --features docs-assistant/ui
 A2A_PKGS := -p agentic-platform -p minimal --features agentic-platform/a2a,minimal/a2a
 ADK_A2A_PKGS := -p agentic-platform --features adk,a2a
 FEATURES ?=
 export FEATURES
 GATEWAY_COMPOSE := $(COMPOSE) --env-file .env -f deploy/llm-gateway/docker-compose.yml
 
-.PHONY: env build test clippy up up-prebuilt prebuilt down logs up-minimal up-mesh up-llm-gateway down-llm-gateway up-with-gateway eval eval-mesh run-local run-mesh-local
+.PHONY: ui-install ui-dev ui-build env build test clippy up up-prebuilt prebuilt down logs up-minimal up-mesh up-llm-gateway down-llm-gateway up-with-gateway eval eval-mesh run-local run-mesh-local
 
 build:
 	cargo build --workspace
@@ -16,6 +17,7 @@ build:
 test:
 	cargo test --workspace
 	cargo test $(ADK_PKGS)
+	cargo test $(UI_PKGS)
 	cargo test $(A2A_PKGS)
 	cargo test $(ADK_A2A_PKGS)
 	cargo test $(MCP)
@@ -23,6 +25,7 @@ test:
 clippy:
 	cargo clippy --workspace --all-targets -- -D warnings
 	cargo clippy $(ADK_PKGS) --all-targets -- -D warnings
+	cargo clippy $(UI_PKGS) --all-targets -- -D warnings
 	cargo clippy $(A2A_PKGS) --all-targets -- -D warnings
 	cargo clippy $(ADK_A2A_PKGS) --all-targets -- -D warnings
 	cargo clippy $(MCP) --all-targets -- -D warnings
@@ -79,3 +82,13 @@ eval:
 
 run-local: env
 	./deploy/run-local.sh
+
+ui-install:
+	npm ci --prefix ui
+
+# GATEWAY_URL overrides the proxy target (default http://localhost:8080).
+ui-dev:
+	npm run dev --prefix ui
+
+ui-build:
+	npm run build --prefix ui

@@ -97,6 +97,32 @@ fn default_backoff_base_ms() -> u64 {
     250
 }
 
+/// The opt-in display agent that lays out a validated output as an A2UI surface.
+#[derive(Debug, Clone, Deserialize)]
+pub struct DisplayConfig {
+    #[serde(default = "default_true", deserialize_with = "lenient_bool")]
+    pub enabled: bool,
+    /// Defaults to `models.default`.
+    #[serde(default)]
+    pub model: Option<String>,
+    #[serde(default = "default_display_attempts")]
+    pub max_attempts: u32,
+}
+
+impl Default for DisplayConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            model: None,
+            max_attempts: default_display_attempts(),
+        }
+    }
+}
+
+fn default_display_attempts() -> u32 {
+    2
+}
+
 #[derive(Debug, Clone, Deserialize)]
 pub struct RateLimitConfig {
     #[serde(default = "default_rpm")]
@@ -314,6 +340,8 @@ pub struct PlatformConfig {
     #[serde(default)]
     pub guard: GuardConfig,
     #[serde(default)]
+    pub display: DisplayConfig,
+    #[serde(default)]
     pub rate_limit: RateLimitConfig,
     #[serde(default)]
     pub routing: RoutingConfig,
@@ -366,6 +394,11 @@ impl PlatformConfig {
                     "llm_gateway.timeout_secs must be at least 1".into(),
                 ));
             }
+        }
+        if self.display.max_attempts == 0 {
+            return Err(PlatformError::Config(
+                "display.max_attempts must be at least 1".into(),
+            ));
         }
         if self.a2a.server.task_ttl_secs == 0 {
             return Err(PlatformError::Config(
