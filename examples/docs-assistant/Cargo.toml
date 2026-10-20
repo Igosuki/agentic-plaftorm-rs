@@ -7,6 +7,7 @@ publish.workspace = true
 
 [features]
 adk = ["agentic-platform/adk"]
+ui = ["agentic-platform/ui"]
 
 [dependencies]
 agentic-platform.workspace = true

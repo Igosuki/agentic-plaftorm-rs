@@ -25,7 +25,7 @@ use crate::{
     engine::AgentEngine,
     llm::Pricing,
     mcp::McpHub,
-    pipeline::{RunRequest, RunResponse, authenticate, run_pipeline},
+    pipeline::{RunRequest, RunResponse, UiFormat, authenticate, run_pipeline},
     prompts::{PromptError, PromptRegistry},
     specialist::SpecialistDef,
     telemetry::MetricsStore,
@@ -311,6 +311,7 @@ struct RunBody {
     input: String,
     application: Option<String>,
     use_case: Option<String>,
+    ui: Option<UiFormat>,
 }
 
 async fn run_agent(
@@ -326,6 +327,7 @@ async fn run_agent(
             .or_else(|| ctx.application_override.clone()),
         use_case: body.use_case.or_else(|| ctx.use_case.clone()),
         agent_hint: None,
+        ui: body.ui,
     };
     run_pipeline(&st, &ctx, req).await.map(Json)
 }

@@ -8,7 +8,7 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 use crate::{
@@ -166,6 +166,12 @@ pub fn authenticate_any<S: AsRef<str>>(
     }))
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+pub enum UiFormat {
+    #[serde(rename = "a2ui")]
+    A2ui,
+}
+
 #[derive(Debug, Clone)]
 pub struct RunRequest {
     pub input: String,
@@ -175,6 +181,8 @@ pub struct RunRequest {
     pub use_case: Option<String>,
     /// Names a registered specialist and skips the intent gate and coordinator.
     pub agent_hint: Option<String>,
+    /// Runs the display agent after the output is validated; its failure never fails the request.
+    pub ui: Option<UiFormat>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -184,9 +192,20 @@ pub struct PromptRef {
 }
 
 #[derive(Debug, Clone, Serialize)]
+pub struct UiPayload {
+    pub protocol: &'static str,
+    pub version: &'static str,
+    pub surface_id: String,
+    pub messages: Vec<Value>,
+}
+
+#[derive(Debug, Clone, Serialize)]
 pub struct RunResponse {
     pub agent: String,
     pub output: Value,
+    /// Absent unless UI was requested; `null` when it was requested but not rendered.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ui: Option<Option<UiPayload>>,
     pub prompt: PromptRef,
     pub request_id: String,
     pub trace: Value,
@@ -439,12 +458,14 @@ pub async fn run_pipeline(
     record.hallucinations = count_attempts(&result.attempts, AttemptOutcome::Hallucination);
     record.schema_violations = count_attempts(&result.attempts, AttemptOutcome::SchemaViolation);
 
+    let display = render_requested(st, ctx, &record, def, &result.output, req.ui).await;
+
     let tool_calls: Vec<Value> = evidence
         .calls()
         .iter()
         .map(|c| json!({"server": c.server, "tool": c.tool, "outcome": c.outcome, "latency_ms": c.latency_ms}))
         .collect();
-    let trace = json!({
+    let mut trace = json!({
         "classification": classification_json(routing.method, &routing.scores),
         "engine": engine.name(),
         "attempts": result.attempts,
@@ -453,10 +474,13 @@ pub async fn run_pipeline(
         "latency_ms": latency(),
     });
 
+    let ui = attach_display(&mut trace, display);
+
     match result.output {
         Some(output) => {
             finish(record, RequestOutcome::Ok);
             Ok(RunResponse {
+                ui,
                 request_id: ctx.request_id.clone(),
                 agent: def.name.clone(),
                 prompt: PromptRef {
@@ -483,4 +507,263 @@ pub async fn run_pipeline(
             .with_trace(trace))
         }
     }
+}
+
+async fn render_requested(
+    st: &AppState,
+    ctx: &RequestContext,
+    record: &RequestRecord,
+    def: &crate::specialist::SpecialistDef,
+    output: &Option<Value>,
+    ui: Option<UiFormat>,
+) -> Option<(Option<UiPayload>, Value)> {
+    match (output, ui) {
+        (Some(output), Some(UiFormat::A2ui)) => {
+            Some(render_display(st, ctx, &record.app, &record.use_case, def, output).await)
+        }
+        _ => None,
+    }
+}
+
+fn attach_display(
+    trace: &mut Value,
+    display: Option<(Option<UiPayload>, Value)>,
+) -> Option<Option<UiPayload>> {
+    display.map(|(payload, trace_display)| {
+        trace["display"] = trace_display;
+        payload
+    })
+}
+
+fn display_trace(
+    status: &str,
+    attempts: usize,
+    reason: Option<String>,
+    prompt: (&str, Option<&str>),
+    usage: Usage,
+) -> Value {
+    json!({
+        "status": status,
+        "attempts": attempts,
+        "reason": reason,
+        "prompt": {"id": prompt.0, "version": prompt.1},
+        "usage": usage,
+    })
+}
+
+#[cfg(not(feature = "ui"))]
+async fn render_display(
+    _st: &AppState,
+    _ctx: &RequestContext,
+    _app: &str,
+    _use_case: &str,
+    _def: &crate::specialist::SpecialistDef,
+    _output: &Value,
+) -> (Option<UiPayload>, Value) {
+    let reason = "this gateway was built without the `ui` cargo feature".to_owned();
+    let usage = Usage {
+        input_tokens: 0,
+        output_tokens: 0,
+        cost_usd: 0.0,
+    };
+    (
+        None,
+        display_trace(
+            "unavailable",
+            0,
+            Some(reason),
+            ("display_agent", None),
+            usage,
+        ),
+    )
+}
+
+#[cfg(feature = "ui")]
+struct DisplayUnavailable {
+    reason: String,
+    prompt_version: Option<String>,
+}
+
+#[cfg(feature = "ui")]
+fn unavailable(reason: String, prompt_version: Option<&str>) -> DisplayUnavailable {
+    DisplayUnavailable {
+        reason,
+        prompt_version: prompt_version.map(str::to_owned),
+    }
+}
+
+#[cfg(feature = "ui")]
+fn resolve_display(
+    st: &AppState,
+) -> Result<
+    (
+        crate::prompts::ResolvedPrompt,
+        String,
+        std::sync::Arc<dyn crate::engine::AgentEngine>,
+    ),
+    DisplayUnavailable,
+> {
+    use crate::display;
+
+    let cfg = &st.config.display;
+    if !cfg.enabled {
+        return Err(unavailable(
+            "the display agent is disabled (`display.enabled: false`)".into(),
+            None,
+        ));
+    }
+    let Some(prompt) = st.prompts.resolve_live(display::PROMPT_ID) else {
+        return Err(unavailable(
+            format!("prompt `{}` is not available", display::PROMPT_ID),
+            None,
+        ));
+    };
+    let model_spec = cfg
+        .model
+        .clone()
+        .or(prompt.model.clone())
+        .unwrap_or_else(|| st.config.models.default.clone());
+    let Some(engine) = st.engines.get(&st.config.engine) else {
+        return Err(unavailable(
+            format!("engine `{}` is not registered", st.config.engine),
+            Some(&prompt.version),
+        ));
+    };
+    if let Err(e) = engine.check_model(&model_spec) {
+        return Err(unavailable(e.to_string(), Some(&prompt.version)));
+    }
+    Ok((prompt, model_spec, engine.clone()))
+}
+
+#[cfg(feature = "ui")]
+fn record_display_usage(
+    st: &AppState,
+    ctx: &RequestContext,
+    app: &str,
+    use_case: &str,
+    model_spec: &str,
+    used: &crate::engine::TokenUsage,
+) -> Usage {
+    let cost = st
+        .pricing
+        .cost_usd(model_spec, used.input_tokens, used.output_tokens);
+    let usage = UsageRecord {
+        app,
+        team: &ctx.team,
+        use_case,
+        agent: crate::display::AGENT,
+        model: model_spec,
+        input_tokens: used.input_tokens,
+        output_tokens: used.output_tokens,
+        cost_usd: cost,
+    };
+    telemetry::record_usage(&usage);
+    st.store.add_usage(&ctx.user, &usage);
+    Usage {
+        input_tokens: used.input_tokens,
+        output_tokens: used.output_tokens,
+        cost_usd: cost,
+    }
+}
+
+#[cfg(feature = "ui")]
+fn display_outcome(
+    result: crate::display::DisplayResult,
+    version: Option<&str>,
+    usage: Usage,
+) -> (Option<UiPayload>, Value) {
+    use crate::display;
+
+    let attempts = result.attempts.len();
+    match result.surface {
+        Some(surface) => {
+            let payload = UiPayload {
+                protocol: display::PROTOCOL,
+                version: display::VERSION,
+                surface_id: surface.surface_id,
+                messages: surface.messages,
+            };
+            (
+                Some(payload),
+                display_trace(
+                    "rendered",
+                    attempts,
+                    None,
+                    (display::PROMPT_ID, version),
+                    usage,
+                ),
+            )
+        }
+        None => {
+            let reason = result
+                .attempts
+                .last()
+                .and_then(|a| a.detail.clone())
+                .unwrap_or_else(|| "no attempt succeeded".into());
+            (
+                None,
+                display_trace(
+                    "failed",
+                    attempts,
+                    Some(reason),
+                    (display::PROMPT_ID, version),
+                    usage,
+                ),
+            )
+        }
+    }
+}
+
+#[cfg(feature = "ui")]
+async fn render_display(
+    st: &AppState,
+    ctx: &RequestContext,
+    app: &str,
+    use_case: &str,
+    def: &crate::specialist::SpecialistDef,
+    output: &Value,
+) -> (Option<UiPayload>, Value) {
+    use crate::display;
+
+    let (prompt, model_spec, engine) = match resolve_display(st) {
+        Ok(resolved) => resolved,
+        Err(DisplayUnavailable {
+            reason,
+            prompt_version,
+        }) => {
+            tracing::warn!(%reason, "display agent unavailable");
+            let trace = display_trace(
+                "unavailable",
+                0,
+                Some(reason),
+                (display::PROMPT_ID, prompt_version.as_deref()),
+                Usage {
+                    input_tokens: 0,
+                    output_tokens: 0,
+                    cost_usd: 0.0,
+                },
+            );
+            return (None, trace);
+        }
+    };
+
+    let result = display::run(display::DisplayRequest {
+        engine: engine.as_ref(),
+        model_spec: &model_spec,
+        preamble: &prompt.template,
+        temperature: prompt.temperature,
+        schema: &def.output_schema(),
+        output,
+        max_attempts: st.config.display.max_attempts,
+        backoff_base_ms: st.config.guard.backoff_base_ms,
+        app,
+        use_case,
+        prompt_version: &prompt.version,
+        caller: Some(ctx.claims.clone()),
+        request_id: &ctx.request_id,
+    })
+    .await;
+
+    let usage = record_display_usage(st, ctx, app, use_case, &model_spec, &result.usage);
+    display_outcome(result, Some(&prompt.version), usage)
 }

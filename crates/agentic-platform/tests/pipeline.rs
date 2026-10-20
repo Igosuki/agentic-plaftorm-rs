@@ -14,6 +14,7 @@ fn req(input: &str, hint: Option<&str>) -> RunRequest {
         application: None,
         use_case: None,
         agent_hint: hint.map(str::to_owned),
+        ui: None,
     }
 }
 

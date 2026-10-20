@@ -175,7 +175,7 @@ fn max_turns_nudge(input: &str, evidence: &Evidence) -> String {
     )
 }
 
-fn backoff(base_ms: u64, infra_failures: u32) -> Duration {
+pub(crate) fn backoff(base_ms: u64, infra_failures: u32) -> Duration {
     let ms = base_ms.saturating_mul(1u64 << (infra_failures - 1).min(6));
     Duration::from_millis(ms.min(10_000))
 }

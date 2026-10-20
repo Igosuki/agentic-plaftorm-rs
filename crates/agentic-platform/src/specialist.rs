@@ -74,11 +74,16 @@ impl<T: AgentOutput> Specialist<T> {
 
 pub(crate) trait Runner: Send + Sync {
     fn run<'a>(&'a self, req: GuardRequest<'a>) -> BoxFuture<'a, GuardResult<Value>>;
+    fn output_schema(&self) -> Value;
 }
 
 struct TypedRunner<T>(PhantomData<fn() -> T>);
 
 impl<T: AgentOutput> Runner for TypedRunner<T> {
+    fn output_schema(&self) -> Value {
+        guard::output_schema::<T>()
+    }
+
     fn run<'a>(&'a self, req: GuardRequest<'a>) -> BoxFuture<'a, GuardResult<Value>> {
         Box::pin(async move {
             let r = guard::run::<T>(req).await;
@@ -100,4 +105,10 @@ pub struct SpecialistDef {
     pub max_turns: usize,
     pub engine: Option<String>,
     pub(crate) runner: Arc<dyn Runner>,
+}
+
+impl SpecialistDef {
+    pub fn output_schema(&self) -> Value {
+        self.runner.output_schema()
+    }
 }
